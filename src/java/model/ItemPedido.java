@@ -4,6 +4,8 @@
  */
 package model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -15,9 +17,23 @@ public class ItemPedido {
     private Long id;
     private Integer quantidade;
     private Produto produto;
+    private List<Produto> adicionais = new ArrayList<>();
     
-    public Double valorTotal() {
-        return produto.valorFinal() * quantidade;
+    public void addAdicional(Produto adicional) {
+        adicionais.add(adicional);
+    }
+    
+    public double valorTotal() {
+        double valorProdutoMaisAdicionais = produto.getValor() + precoTotalAdicionais();
+        return  valorProdutoMaisAdicionais;
+    }
+    
+    private double precoTotalAdicionais() {
+        double soma = 0.0;
+        for(Produto adicional : adicionais) {
+            soma += adicional.getValor();
+        }
+        return soma;
     }
 
     public Long getId() {
@@ -44,6 +60,10 @@ public class ItemPedido {
         this.produto = produto;
     }
 
+    public List<Produto> getAdicionais() {
+        return adicionais;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -68,7 +88,7 @@ public class ItemPedido {
 
     @Override
     public String toString() {
-        return "ItemPedido{" + "id=" + id + ", quantidade=" + quantidade + ", produto=" + produto + '}';
+        return "ItemPedido{" + "id=" + id + ", quantidade=" + quantidade + ", produto=" + produto + ", adicionais=" + adicionais + '}';
     }
     
     

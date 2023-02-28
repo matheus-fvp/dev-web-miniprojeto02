@@ -15,8 +15,6 @@ public abstract class Produto {
     private Long id;
     private String nome;
     private Double valor;
-    
-    public abstract Double valorFinal();
 
     public Long getId() {
         return id;

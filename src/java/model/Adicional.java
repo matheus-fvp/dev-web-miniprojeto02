@@ -9,10 +9,5 @@ package model;
  * @author vieir
  */
 public class Adicional extends Produto{
-
-    @Override
-    public Double valorFinal() {
-        return getValor();
-    }
     
 }
