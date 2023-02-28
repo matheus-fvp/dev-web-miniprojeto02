@@ -29,6 +29,14 @@ public class Pedido {
 
     private List<ItemPedido> lanches = new ArrayList<>(); 
     
+    public double valorTotalPedido() {
+        double soma = 0.0;
+        for(ItemPedido itemPedido : lanches) {
+            soma += itemPedido.valorTotal();
+        }
+        return soma;
+    }
+    
     public void addItemPedido(ItemPedido  itemPedido) {
         lanches.add(itemPedido);
     }

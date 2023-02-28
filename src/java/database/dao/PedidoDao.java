@@ -25,7 +25,19 @@ import model.Pedido;
  */
 public class PedidoDao {
     
-    private Connection conn = null;
+    private String SELECT_BY_ID_Pedido = "SELECT\n" 
+            + "	   p.id as pedido_id, p.cliente_email, p.cliente_nome, p.cliente_telefone, p.data_pedido,\n" 
+            + "    e.id as endereco_id, e.bairro, e.numero, e.rua, e.complemento,\n" 
+            + "    ip.id as item_pedido_id, ip.quantidade as item_pedido_qtd,\n" 
+            + "    l.id as lanche_id, l.nome as lanche_nom, l.valor as lanche_valor, l.descricao as lanche_descricao,\n" 
+            + "    a.id as adicional_id, a.nome as adicional_nome,  a.valor as adicional_valor\n" 
+            + "FROM pedido AS p\n" 
+            + "	INNER JOIN endereco AS e ON (p.endereco_id_fk = e.id) AND p.id = ?\n" 
+            + "    INNER JOIN pedido_item_pedido AS pip ON (p.id = pip.pedido_id_fk)\n" 
+            + "    INNER JOIN item_pedido AS ip ON (pip.titem_pedido_id_fk = ip.id)\n" 
+            + "    INNER JOIN lanche AS l on (ip.lanche_id_fk = l.id)\n" 
+            + "    LEFT JOIN lanche_adicional AS la on (l.id = la.lanche_id_fk)\n" 
+            + "    LEFT JOIN adicional AS a on (la.adicional_id_fk = a.id);";
     
     private String SELECT_ALL_Pedidos = "SELECT\n" 
             + "	   p.id as pedido_id, p.cliente_email, p.cliente_nome, p.cliente_telefone, p.data_pedido,\n" 
@@ -41,12 +53,40 @@ public class PedidoDao {
             + "    LEFT JOIN lanche_adicional AS la on (l.id = la.lanche_id_fk)\n" 
             + "    LEFT JOIN adicional AS a on (la.adicional_id_fk = a.id);"; 
     
+    
+    public Pedido findById(Long id) {
+        Pedido pedido = null;
+        
+        try {
+            
+            Connection conn = DB.getConnection();
+            PreparedStatement statement = conn.prepareStatement(SELECT_BY_ID_Pedido);
+            statement.setLong(1, id);
+            ResultSet rs = statement.executeQuery();
+            
+            while(rs.next()) {
+                if(pedido == null) pedido = new Pedido();
+                construirPedido(pedido, rs, conn);
+            }
+            statement.close();
+            rs.close();
+            
+        }catch(SQLException e) {
+            printSQLException(e);
+        }finally{
+            DB.closeConnection();
+        }
+        
+        return pedido;
+        
+    }
+    
     public List<Pedido> findAll() {
         Map<Long, Pedido> pedidos = new LinkedHashMap<>();
         
         try {
             
-            conn = DB.getConnection();
+            Connection conn = DB.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(SELECT_ALL_Pedidos);
             ResultSet rs = preparedStatement.executeQuery();
             
@@ -54,33 +94,43 @@ public class PedidoDao {
             while(rs.next()) {
                 
                 Long produto_id = rs.getLong("pedido_id");
-                System.out.println(produto_id);
-                Pedido p = null;
+                Pedido pedido = null;
                 if(!pedidos.containsKey(produto_id)) {
                    
-                    p = new Pedido();
-                    p.setId(produto_id);
-                    p.setClienteNome(rs.getString("cliente_nome"));
-                    p.setClienteEmail(rs.getString("cliente_email"));
-                    p.setClienteTelefone(rs.getString("cliente_telefone"));
-                    Endereco endereco = intanciarEndereco(rs, conn);
-                    ItemPedido itemPedido = instanciarItemPedido(rs, conn);
-                    p.setEnderecoDeEntrega(endereco);
-                    p.addItemPedido(itemPedido);
-                    pedidos.put(produto_id, p);
+                    pedido = new Pedido();
+                    construirPedido(pedido, rs, conn);
+                    pedidos.put(produto_id, pedido);
                     
                 }else {
                    pedidos.get(produto_id).addItemPedido(instanciarItemPedido(rs, conn));
                 }
                  
             }
+            rs.close();
+            preparedStatement.close();
             
         }catch(SQLException e) {
             printSQLException(e);
+        }finally{
+            DB.closeConnection();
         }
         
         return new ArrayList<>(pedidos.values());
         
+    }
+    
+    private void construirPedido(Pedido pedido, ResultSet rs, Connection conn) throws SQLException {
+        
+        pedido.setId(rs.getLong("pedido_id"));
+        pedido.setClienteNome(rs.getString("cliente_nome"));
+        pedido.setClienteEmail(rs.getString("cliente_email"));
+        pedido.setClienteTelefone(rs.getString("cliente_telefone"));
+            //falta adicionar a data
+        Endereco endereco = intanciarEndereco(rs, conn);
+        ItemPedido itemPedido = instanciarItemPedido(rs, conn);
+        pedido.setEnderecoDeEntrega(endereco);
+        pedido.addItemPedido(itemPedido);
+    
     }
     
     private Endereco intanciarEndereco(ResultSet rs, Connection conn) throws SQLException {

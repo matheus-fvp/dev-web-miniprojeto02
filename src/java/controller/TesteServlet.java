@@ -4,7 +4,6 @@
  */
 package controller;
 
-import database.DB;
 import database.dao.PedidoDao;
 import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
@@ -13,9 +12,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.sql.Connection;
 import java.util.List;
-import model.Department;
 import model.Pedido;
 
 /**
@@ -41,6 +38,7 @@ public class TesteServlet extends HttpServlet {
         try ( PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             List<Pedido> pedidos = pedidoDao.findAll();
+            System.out.println(pedidoDao.findById(3L));
             request.setAttribute("pedidos", pedidos);
             RequestDispatcher dispatcher = request.getRequestDispatcher("teste.jsp");
             dispatcher.forward(request, response);

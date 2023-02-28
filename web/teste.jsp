@@ -26,6 +26,7 @@
                     <th>Email do Cliente</th>
                     <th>Telefone do cliente</th>
                     <th>Endereco</th>
+                    <th>ValorFinal<th>
                 </tr>
                 
             </thead>
@@ -37,6 +38,7 @@
                     <td><%=p.getClienteEmail()%></td>
                     <td><%=p.getClienteTelefone()%></td>
                     <td><%=p.getEnderecoDeEntrega()%></td>
+                    <td><%=p.valorTotalPedido()%></td>
                 </tr>
                 <%}%>
             </tbody>
