@@ -8,12 +8,18 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         <title>TODO supply a title</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="index.css">
     </head>
     <body>
-        <form action="TesteServlet" method="GET">
-            
-            <input type="submit" value="ok">
-            
+        <form action="TesteServlet" method="POST">
+            <div class="mainPage">
+                <h1>Mini projeto 2 - Página inicial</h1>
+                <label><input type="radio" name="sampleRadio" value="Inserir Pedidos" checked="checked"/>Inserir Pedidos</label>
+                <br>
+                <label><input type="radio" name="sampleRadio" value="Visualizar Pedidos" />Visualizar Pedidos</label>
+                <br><br>
+                <input type="submit" value="Submeter" /> 
+            </div>
         </form>
     </body>
 </html>

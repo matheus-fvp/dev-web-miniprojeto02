@@ -12,36 +12,34 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Lista Pedidos</title>
+        <link rel="stylesheet" href="teste.css">
     </head>
     <body>
+        <form action="TesteServlet" method="POST">
         <h1>Lista Pedidos</h1>
+        <button type="submit" name="RecarregarConsulta" class="recarregarButton" value="recarregar">Recarregar Visualização</button>
         <%List<Pedido> pedidos = (List<Pedido>) request.getAttribute("pedidos");%>
         <table border="1">
-            
+
             <thead>
-                
+
                 <tr>
                     <th>ID</th>
                     <th>Nome Cliente</th>
-                    <th>Email do Cliente</th>
-                    <th>Telefone do cliente</th>
-                    <th>Endereco</th>
-                    <th>ValorFinal<th>
+                    <th>Ver mais detalhes do Pedido</th>
                 </tr>
-                
+
             </thead>
-            <tbody>
+            <tbody class="table">
                 <% for(Pedido p : pedidos){%>
-                <tr>
-                    <td><%=p.getId()%></td>
+                <tr class="table">
+                    <td id=<%=p.getId()%>><%=p.getId()%></td>
                     <td><%=p.getClienteNome()%></td>
-                    <td><%=p.getClienteEmail()%></td>
-                    <td><%=p.getClienteTelefone()%></td>
-                    <td><%=p.getEnderecoDeEntrega()%></td>
-                    <td><%=p.valorTotalPedido()%></td>
+                    <td><button type="submit" name="DetalhesPedido" class="button" value="<%=p.getId()%>">Ver Mais</button></td>
                 </tr>
-                <%}%>
-            </tbody>
-        </table>
-    </body>
+              </form>
+            <%}%>
+        </tbody>
+    </table>
+</body>
 </html>

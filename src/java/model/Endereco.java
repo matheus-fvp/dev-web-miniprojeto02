@@ -82,7 +82,10 @@ public class Endereco {
 
     @Override
     public String toString() {
-        return "Endereco{" + "id=" + id + ", bairro=" + bairro + ", numero=" + numero + ", rua=" + rua + ", complemento=" + complemento + '}';
+        if(this.getComplemento()==null)
+            return this.rua+" - "+this.numero+", Bairro: "+this.bairro;
+        else
+            return this.rua+" - "+this.numero+", Bairro: "+this.bairro+", Complemento: "+this.complemento;
     }
     
     
