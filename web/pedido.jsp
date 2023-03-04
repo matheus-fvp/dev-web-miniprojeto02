@@ -29,7 +29,7 @@
                         <label for="lanche-1-select">Selecione o lanche:</label>
                         <div class="lanches">
                             <% for(Lanche l: lanches){%>
-                            <input type="radio" name="lanche" id="<%=l.getId()%>">
+                            <input type="radio" name="lanche" id="<%=l.getId()%>" value="<%=l.getId()%>">
                             <label for="<%=l.getId()%>"><%=l.getNome()%></label>
                             <div class="descri">
                                 <label for="<%=l.getId()%>"><%=l.getDescricao()%></label>
@@ -45,7 +45,7 @@
                             
                             <% for(Adicional a: adicionais){%>
                                 
-                                <input type="checkbox" name="adicionais" id="<%=a.getId()%>">
+                            <input type="checkbox" name="adicionais" id="<%=a.getId()%>" value="<%=a.getId()%>">
                                 <label for="<%=a.getId()%>"><%=a.getNome()%></label>
                             <%}%>
                             
