@@ -29,7 +29,7 @@
                         <label for="lanche-1-select">Selecione o lanche:</label>
                         <div class="lanches">
                             <% for(Lanche l: lanches){%>
-                            <input type="radio" name="pedi" id="<%=l.getId()%>">
+                            <input type="radio" name="lanche" id="<%=l.getId()%>">
                             <label for="<%=l.getId()%>"><%=l.getNome()%></label>
                             <div class="descri">
                                 <label for="<%=l.getId()%>"><%=l.getDescricao()%></label>
@@ -45,20 +45,71 @@
                             
                             <% for(Adicional a: adicionais){%>
                                 
-                                <input type="checkbox" name="pedi" id="<%=a.getId()%>">
+                                <input type="checkbox" name="adicionais" id="<%=a.getId()%>">
                                 <label for="<%=a.getId()%>"><%=a.getNome()%></label>
                             <%}%>
-                            <input type="checkbox" name="pedi" id="nenhum">
-                            <label for="nenhum">Nenhum</label>
+                            
                         </div>
                     </div>
 
-                    <button type="button" class="btn add-lanche">Adicionar outro lanche</button>
-                    <button type="button" class="btn remover-lanche" style="display: none;">Remover lanche</button>
+                    <button id="adicionar-lanche">Adicionar Lanche</button>
+                    <button id="enviar-pedido">Enviar Pedido</button>
                 </div>
-
-                <button type="submit" class="btn">Finalizar pedido</button>
             </form>
+            <script>
+              const form = document.querySelector('form');
+              const adicionarLancheBtn = document.querySelector('#adicionar-lanche');
+              const enviarPedidoBtn = document.querySelector('#enviar-pedido');
+              let lanches = [];
+              
+
+              adicionarLancheBtn.addEventListener('click', function(event) {
+                event.preventDefault(); // previne o comportamento padrão do botão
+
+                const lanche = document.querySelector('#lanche').value;
+                const adicionais = [];
+                const checkboxes = document.querySelectorAll('input[name="adicionais"]:checked');
+                checkboxes.forEach(function(checkbox) {
+                  adicionais.push(checkbox.value);
+                });
+
+                lanches.push({
+                  lanche: lanche,
+                  adicionais: adicionais
+                });
+
+                form.reset();
+                renderLanches();
+              });
+
+              enviarPedidoBtn.addEventListener('click', function(event) {
+                event.preventDefault(); // previne o comportamento padrão do botão
+
+                const xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                  if (this.readyState === 4 && this.status === 200) {
+                    console.log(this.responseText);
+                  }
+                };
+                xhttp.open('POST', '/link do servlet');
+                xhttp.setRequestHeader('Content-type', 'application/json');
+                xhttp.send(JSON.stringify(lanches));
+              });
+
+              function renderLanches() {
+                const lanchesDiv = document.querySelector('#lanches');
+                lanchesDiv.innerHTML = '';
+                lanches.forEach(function(lanche, index) {
+                  const lancheDiv = document.createElement('div');
+                  lancheDiv.innerHTML = `
+                    <h3>Lanche ${index + 1}</h3>
+                    <p><strong>Lanche:</strong> ${lanche.lanche}</p>
+                    <p><strong>Adicionais:</strong> ${lanche.adicionais.join(', ')}</p>
+                  `;
+                  lanchesDiv.appendChild(lancheDiv);
+                });
+              }
+            </script>
         <script>
             
         </script>
