@@ -26,6 +26,11 @@ public class TesteServlet extends HttpServlet {
     private EnderecoDao enderecoDAO = null;
     private ItemPedidoDao ItemPedidoDao = null;
     private List<Pedido> pedidos = null;
+    private LancheDao lancheDao = null;
+    private List<Lanche> lanches = null;
+    private AdicionalDao addDao = null;
+    private List<Adicional> adicionais = null;
+    
 
     @Override
     public void init() throws ServletException {
@@ -33,6 +38,10 @@ public class TesteServlet extends HttpServlet {
         enderecoDAO = new EnderecoDao();
         ItemPedidoDao = new ItemPedidoDao();
         pedidos = pedidoDao.findAll();
+        lancheDao = new LancheDao();
+        lanches = lancheDao.findAll();
+        addDao = new AdicionalDao();
+        adicionais = addDao.findAll();
     }
 
     @Override
@@ -49,8 +58,13 @@ public class TesteServlet extends HttpServlet {
                 RequestDispatcher dispatcher = request.getRequestDispatcher("teste.jsp");
                 dispatcher.forward(request, response);
             } else if ("Inserir Pedidos".equals(radio)) {
+                
+                request.setAttribute("lanches", lanches);
+                request.setAttribute("adicionais", adicionais);
+                RequestDispatcher dispatcher = request.getRequestDispatcher("pedido.jsp");
+                dispatcher.forward(request, response);
                 //Salavando no BD teste
-                Endereco e = new Endereco();;
+                /*Endereco e = new Endereco();;
                 e.setBairro("Jardim Nova Esperança");
                 e.setRua("Rua Humberto Sampaio de Souza");
                 e.setNumero("665");
@@ -94,7 +108,7 @@ public class TesteServlet extends HttpServlet {
                 ItemPedidoDao.save(itemPedido2);
                 System.out.println(itemPedido);
                 pedidoDao.save(pedido);
-                System.out.println("Pedido Inserido");
+                System.out.println("Pedido Inserido");*/
             } else {
 
                 String idPedido = request.getParameter("DetalhesPedido");

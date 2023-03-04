@@ -25,7 +25,7 @@ public class DB {
     private static String driver = "com.mysql.jdbc.Driver";
     private static String url = "jdbc:mysql://localhost/lanchonete";
     private static String user = "root";
-    private static String password = "123456";
+    private static String password = "1234";
     
     public static Connection getConnection() {
         if(conn == null) {
