@@ -31,11 +31,11 @@
 
             </thead>
             <tbody class="table">
-                <% for(Pedido p : pedidos){%>
+                <% for(int i=0;i<pedidos.size();i++){%>
                 <tr class="table">
-                    <td id=<%=p.getId()%>><%=p.getId()%></td>
-                    <td><%=p.getClienteNome()%></td>
-                    <td><button type="submit" name="DetalhesPedido" class="button" value="<%=p.getId()%>">Ver Mais</button></td>
+                    <td id=<%=i%>><%=i%></td>
+                    <td><%=pedidos.get(i).getClienteNome()%></td>
+                    <td><button type="submit" name="DetalhesPedido" class="button" value="<%=i%>">Ver Mais</button></td>
                 </tr>
               </form>
             <%}%>

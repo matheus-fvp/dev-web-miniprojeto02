@@ -4,6 +4,8 @@
  */
 package controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import model.Pedido2;
 import repository.PedidoDao;
 import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
@@ -12,9 +14,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import java.util.List;
 import model.*;
 import repository.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
 
 /**
  *
@@ -30,18 +35,15 @@ public class TesteServlet extends HttpServlet {
     private List<Lanche> lanches = null;
     private AdicionalDao addDao = null;
     private List<Adicional> adicionais = null;
-    
 
     @Override
     public void init() throws ServletException {
         pedidoDao = new PedidoDao();
         enderecoDAO = new EnderecoDao();
         ItemPedidoDao = new ItemPedidoDao();
-        pedidos = pedidoDao.findAll();
         lancheDao = new LancheDao();
-        lanches = lancheDao.findAll();
         addDao = new AdicionalDao();
-        adicionais = addDao.findAll();
+        
     }
 
     @Override
@@ -51,6 +53,7 @@ public class TesteServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             String radio = request.getParameter("sampleRadio");
             if ("Visualizar Pedidos".equals(radio)) {
+                pedidos = pedidoDao.findAll();
                 /* TODO output your page here. You may use following sample code. */
                 System.out.println("value of selected radio: " + radio);
 
@@ -58,78 +61,99 @@ public class TesteServlet extends HttpServlet {
                 RequestDispatcher dispatcher = request.getRequestDispatcher("teste.jsp");
                 dispatcher.forward(request, response);
             } else if ("Inserir Pedidos".equals(radio)) {
-                
+                lanches = lancheDao.findAll();
+                adicionais = addDao.findAll();
+                System.out.println("value of selected radio: " + radio);
                 request.setAttribute("lanches", lanches);
                 request.setAttribute("adicionais", adicionais);
                 RequestDispatcher dispatcher = request.getRequestDispatcher("pedido.jsp");
                 dispatcher.forward(request, response);
-                //Salavando no BD teste
-                /*Endereco e = new Endereco();;
-                e.setBairro("Jardim Nova Esperança");
-                e.setRua("Rua Humberto Sampaio de Souza");
-                e.setNumero("665");
-                e.setComplemento("Bar da Carolina");
-                e.setId(53L);
-
-                Lanche l = new Lanche();
-                l.setId(2L);
-                Lanche l2 = new Lanche();
-                l2.setId(5L);
-
-                Adicional a = new Adicional();
-                a.setId(1L);
-                Adicional a2 = new Adicional();
-                a2.setId(3L);
-
-
-                ItemPedido itemPedido = new ItemPedido();
-                itemPedido.setQuantidade(1);
-                itemPedido.setProduto(l);
-                itemPedido.addAdicional(a);
-                itemPedido.addAdicional(a2);
-
-                ItemPedido itemPedido2 = new ItemPedido();
-                itemPedido2.setQuantidade(3);
-                itemPedido2.setProduto(l2);
-
-                Pedido pedido = new Pedido();
-                pedido.setClienteNome("Matheus Vieira22");
-                pedido.setClienteEmail("matheusvieira@gmail.com");
-                pedido.setClienteTelefone("(15)66677-9090");
-                pedido.setEnderecoDeEntrega(e);
-                pedido.addItemPedido(itemPedido);
-                pedido.addItemPedido(itemPedido2);
-                System.out.println(e);
-                System.out.println(pedido);
-
-
-                //enderecoDAO.save(e);
-                ItemPedidoDao.save(itemPedido);
-                ItemPedidoDao.save(itemPedido2);
-                System.out.println(itemPedido);
-                pedidoDao.save(pedido);
-                System.out.println("Pedido Inserido");*/
+              
             } else {
-
+                System.out.println("ELSE");
                 String idPedido = request.getParameter("DetalhesPedido");
                 String recarregarConsulta = request.getParameter("RecarregarConsulta");
+                String pedidoT = request.getParameter("enviar-pedido");
+                String pedidoT1 = request.getParameter("pedido-enviado");
 
                 if (recarregarConsulta != null) {
                     pedidos = pedidoDao.findAll();
+                    System.out.println(pedidos.size());
                     request.setAttribute("pedidos", pedidos);
                     RequestDispatcher dispatcher = request.getRequestDispatcher("teste.jsp");
                     dispatcher.forward(request, response);
                 } else if (idPedido != null) {
+                    System.out.println(pedidos.size());
                     request.setAttribute("idPedido", idPedido);
                     request.setAttribute("pedidos", pedidos);
                     RequestDispatcher dispatcher = request.getRequestDispatcher("MaisDetalhes.jsp");
                     dispatcher.forward(request, response);
-                }
-                System.out.println(idPedido);
+                } else if (pedidoT != null && pedidoT1 != null) {
+                    //Lendo objeto JSON passado pelo forms através da lib Jackson
+                    String detalhesPedido = request.getParameter("pedido-enviado");
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    JsonNode jsonNode = objectMapper.readTree(detalhesPedido);
+                    System.out.println("Json: " + jsonNode);
 
+                    //Tratando Dados Pessoais
+                    JsonNode dadosPessoaisJson = jsonNode.get(jsonNode.size() - 1);
+                    String nome = dadosPessoaisJson.get("nome").asText();
+                    String email = dadosPessoaisJson.get("email").asText();
+                    String telefone = dadosPessoaisJson.get("telefone").asText();
+
+                    String rua = dadosPessoaisJson.get("rua").asText();
+                    String numero = dadosPessoaisJson.get("numero").asText();
+                    String bairro = dadosPessoaisJson.get("bairro").asText();
+                    String complemento = dadosPessoaisJson.get("complemento").asText();
+
+                    Endereco endereco = new Endereco();
+                    
+                    endereco.setRua(rua);
+                    endereco.setNumero(numero);
+                    endereco.setBairro(bairro);
+                    if (!complemento.isEmpty()) {
+                        endereco.setComplemento(complemento);
+                    }
+                    enderecoDAO.save(endereco);
+                    
+                    ItemPedido itemPedido = new ItemPedido();
+                    Pedido pedido = new Pedido();
+                    pedido.setClienteNome(nome);
+                    pedido.setClienteEmail(email);
+                    pedido.setClienteTelefone(telefone);
+                    pedido.setEnderecoDeEntrega(endereco);
+
+                    for (int i = 0; i < jsonNode.size() - 1; i++) {
+                        
+                        
+
+                        JsonNode lanche = jsonNode.get(i);
+                        Long lancheId = Long.valueOf(lanche.get("lancheId").asText());
+                        Lanche l = new Lanche();
+                        l.setId(lancheId);
+                        itemPedido.setProduto(l);
+                        itemPedido.setQuantidade(1);
+
+                        JsonNode adicionaisIdJson = lanche.get("adicionaisId");
+                        if (adicionaisIdJson.isArray()) {
+                            for (final JsonNode objNode : adicionaisIdJson) {
+                                Long adicionalId = Long.valueOf(objNode.asText());
+                                Adicional a = new Adicional();
+                                a.setId(adicionalId);
+                                itemPedido.addAdicional(a);
+                            }
+                        }
+                    }
+                    pedido.addItemPedido(itemPedido);
+                    System.out.println("TAM lanches: "+pedido.getLanches().size());
+                    ItemPedidoDao.save(itemPedido);
+                    pedidoDao.save(pedido);
+                    System.out.println("Pedido Inserido");
+                    System.out.println("SERVLET: "+pedido);
+                    response.sendRedirect("index.html");
+                }
             }
 
         }
     }
-
 }
