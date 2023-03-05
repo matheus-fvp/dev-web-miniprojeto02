@@ -17,6 +17,7 @@ import java.util.List;
 import model.*;
 import repository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 /**
  *
@@ -40,7 +41,7 @@ public class ControllerPedidos extends HttpServlet {
         ItemPedidoDao = new ItemPedidoDao();
         lancheDao = new LancheDao();
         addDao = new AdicionalDao();
-        
+
     }
 
     @Override
@@ -52,7 +53,6 @@ public class ControllerPedidos extends HttpServlet {
             if ("Visualizar Pedidos".equals(radio)) {
                 pedidos = pedidoDao.findAll();
                 /* TODO output your page here. You may use following sample code. */
-                System.out.println("value of selected radio: " + radio);
 
                 request.setAttribute("pedidos", pedidos);
                 RequestDispatcher dispatcher = request.getRequestDispatcher("VisualizarPedidos.jsp");
@@ -60,27 +60,33 @@ public class ControllerPedidos extends HttpServlet {
             } else if ("Inserir Pedidos".equals(radio)) {
                 lanches = lancheDao.findAll();
                 adicionais = addDao.findAll();
-                System.out.println("value of selected radio: " + radio);
                 request.setAttribute("lanches", lanches);
                 request.setAttribute("adicionais", adicionais);
                 RequestDispatcher dispatcher = request.getRequestDispatcher("InserirPedidos.jsp");
                 dispatcher.forward(request, response);
-              
+
             } else {
-                System.out.println("ELSE");
                 String idPedido = request.getParameter("DetalhesPedido");
                 String recarregarConsulta = request.getParameter("RecarregarConsulta");
+                String recarregarAjax = request.getParameter("RecarregarAjax");
                 String pedidoT = request.getParameter("enviar-pedido");
                 String pedidoT1 = request.getParameter("pedido-enviado");
 
                 if (recarregarConsulta != null) {
                     pedidos = pedidoDao.findAll();
-                    System.out.println(pedidos.size());
                     request.setAttribute("pedidos", pedidos);
                     RequestDispatcher dispatcher = request.getRequestDispatcher("VisualizarPedidos.jsp");
                     dispatcher.forward(request, response);
+                } else if (recarregarAjax != null) {
+
+                    pedidos = pedidoDao.findAll();
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.registerModule(new JavaTimeModule());
+                    String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(pedidos);
+
+                    out.print(json);
+                    out.flush();
                 } else if (idPedido != null) {
-                    System.out.println(pedidos.size());
                     request.setAttribute("idPedido", idPedido);
                     request.setAttribute("pedidos", pedidos);
                     RequestDispatcher dispatcher = request.getRequestDispatcher("MaisDetalhes.jsp");
@@ -90,7 +96,6 @@ public class ControllerPedidos extends HttpServlet {
                     String detalhesPedido = request.getParameter("pedido-enviado");
                     ObjectMapper objectMapper = new ObjectMapper();
                     JsonNode jsonNode = objectMapper.readTree(detalhesPedido);
-                    System.out.println("Json: " + jsonNode);
 
                     //Tratando Dados Pessoais
                     JsonNode dadosPessoaisJson = jsonNode.get(jsonNode.size() - 1);
@@ -104,7 +109,7 @@ public class ControllerPedidos extends HttpServlet {
                     String complemento = dadosPessoaisJson.get("complemento").asText();
 
                     Endereco endereco = new Endereco();
-                    
+
                     endereco.setRua(rua);
                     endereco.setNumero(numero);
                     endereco.setBairro(bairro);
@@ -112,8 +117,7 @@ public class ControllerPedidos extends HttpServlet {
                         endereco.setComplemento(complemento);
                     }
                     enderecoDAO.save(endereco);
-                    
-                    
+
                     Pedido pedido = new Pedido();
                     pedido.setClienteNome(nome);
                     pedido.setClienteEmail(email);
@@ -123,8 +127,7 @@ public class ControllerPedidos extends HttpServlet {
                     for (int i = 0; i < jsonNode.size() - 1; i++) {
                         ItemPedido itemPedido = new ItemPedido();
                         JsonNode lanche = jsonNode.get(i);
-                        System.out.println("lanche "+i+": "+lanche);
-                        
+
                         Long lancheId = Long.valueOf(lanche.get("lancheId").asText());
                         Lanche l = new Lanche();
                         l.setId(lancheId);
@@ -143,9 +146,8 @@ public class ControllerPedidos extends HttpServlet {
                         pedido.addItemPedido(itemPedido);
                         ItemPedidoDao.save(itemPedido);
                     }
-                    
+
                     pedidoDao.save(pedido);
-                    System.out.println(pedido);
                     response.sendRedirect("index.html");
                 }
             }

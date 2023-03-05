@@ -165,7 +165,6 @@
                         });
                         let jsonPedido = JSON.stringify(pedido);
                         document.querySelector("#pedido-enviado").value = jsonPedido;
-                        console.log(pedido);
                         alert("Pedido enviado");
                     }
 

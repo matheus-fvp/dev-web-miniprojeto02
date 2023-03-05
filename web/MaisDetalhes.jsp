@@ -79,10 +79,7 @@ System.out.println("prox pedido");
 
                     <li><%=adicional.getNome()%></li>
 
-                    <%}%>
-
-
-                    <%
+                    <%}
                 }
             else{
             for(Produto adicional : i.getAdicionais()){
@@ -93,11 +90,6 @@ System.out.println("adicional vindo");
 
                         }
                         }
-                            System.out.println(pedidosMostrados);
-                        %>
-
-                    <%}%>
-
-
+                            System.out.println(pedidosMostrados);}%>
                     </body>
                     </html>
