@@ -59,7 +59,7 @@ public class PedidoDao {
             + "    INNER JOIN item_pedido AS ip ON (pip.titem_pedido_id_fk = ip.id)\n" 
             + "    INNER JOIN lanche AS l on (ip.lanche_id_fk = l.id)\n" 
             + "    LEFT JOIN item_pedido_adicional AS ipa on (ip.id = ipa.item_pedido_id_fk)\n" 
-            + "    LEFT JOIN adicional AS a on (ipa.adicional_id_fk = a.id)"; 
+            + "    LEFT JOIN adicional AS a on (ipa.adicional_id_fk = a.id) ORDER BY p.id"; 
     
     
     public void save(Pedido pedido) {
