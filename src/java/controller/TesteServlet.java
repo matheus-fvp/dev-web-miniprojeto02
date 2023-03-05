@@ -116,7 +116,7 @@ public class TesteServlet extends HttpServlet {
                     }
                     enderecoDAO.save(endereco);
                     
-                    ItemPedido itemPedido = new ItemPedido();
+                    
                     Pedido pedido = new Pedido();
                     pedido.setClienteNome(nome);
                     pedido.setClienteEmail(email);
@@ -124,10 +124,10 @@ public class TesteServlet extends HttpServlet {
                     pedido.setEnderecoDeEntrega(endereco);
 
                     for (int i = 0; i < jsonNode.size() - 1; i++) {
-                        
-                        
-
+                        ItemPedido itemPedido = new ItemPedido();
                         JsonNode lanche = jsonNode.get(i);
+                        System.out.println("lanche "+i+": "+lanche);
+                        
                         Long lancheId = Long.valueOf(lanche.get("lancheId").asText());
                         Lanche l = new Lanche();
                         l.setId(lancheId);
@@ -143,13 +143,12 @@ public class TesteServlet extends HttpServlet {
                                 itemPedido.addAdicional(a);
                             }
                         }
+                        pedido.addItemPedido(itemPedido);
+                        ItemPedidoDao.save(itemPedido);
                     }
-                    pedido.addItemPedido(itemPedido);
-                    System.out.println("TAM lanches: "+pedido.getLanches().size());
-                    ItemPedidoDao.save(itemPedido);
+                    
                     pedidoDao.save(pedido);
-                    System.out.println("Pedido Inserido");
-                    System.out.println("SERVLET: "+pedido);
+                    System.out.println(pedido);
                     response.sendRedirect("index.html");
                 }
             }
