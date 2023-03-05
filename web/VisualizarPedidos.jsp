@@ -12,10 +12,10 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Lista Pedidos</title>
-        <link rel="stylesheet" href="teste.css">
+        <link rel="stylesheet" href="VisualizarPedidos.css">
     </head>
     <body>
-        <form action="TesteServlet" method="POST">
+        <form action="ControllerPedidos" method="POST">
         <h1>Lista Pedidos</h1>
         <button type="submit" name="RecarregarConsulta" class="recarregarButton" value="recarregar">Recarregar Visualização</button>
         <%List<Pedido> pedidos = (List<Pedido>) request.getAttribute("pedidos");%>

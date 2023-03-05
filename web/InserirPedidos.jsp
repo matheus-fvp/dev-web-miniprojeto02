@@ -16,14 +16,14 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Pedido de lanches</title>
-        <link rel="stylesheet" href="pedido.css">
+        <link rel="stylesheet" href="InserirPedidos.css">
     </head>
     <body>
         <%List<Lanche> lanches = (List<Lanche>) request.getAttribute("lanches");%>
         <%List<Adicional> adicionais = (List<Adicional>) request.getAttribute("adicionais");%>
 
 
-        <form action="TesteServlet" method="POST">
+        <form action="ControllerPedidos" method="POST">
             <div id="main">
                 <div class="teste">
                     <div class="input-group">

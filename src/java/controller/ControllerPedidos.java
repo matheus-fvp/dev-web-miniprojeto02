@@ -5,7 +5,6 @@
 package controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import model.Pedido2;
 import repository.PedidoDao;
 import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
@@ -14,18 +13,16 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Arrays;
 import java.util.List;
 import model.*;
 import repository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.ArrayList;
 
 /**
  *
  * @author vieir
  */
-public class TesteServlet extends HttpServlet {
+public class ControllerPedidos extends HttpServlet {
 
     private PedidoDao pedidoDao = null;
     private EnderecoDao enderecoDAO = null;
@@ -58,7 +55,7 @@ public class TesteServlet extends HttpServlet {
                 System.out.println("value of selected radio: " + radio);
 
                 request.setAttribute("pedidos", pedidos);
-                RequestDispatcher dispatcher = request.getRequestDispatcher("teste.jsp");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("VisualizarPedidos.jsp");
                 dispatcher.forward(request, response);
             } else if ("Inserir Pedidos".equals(radio)) {
                 lanches = lancheDao.findAll();
@@ -66,7 +63,7 @@ public class TesteServlet extends HttpServlet {
                 System.out.println("value of selected radio: " + radio);
                 request.setAttribute("lanches", lanches);
                 request.setAttribute("adicionais", adicionais);
-                RequestDispatcher dispatcher = request.getRequestDispatcher("pedido.jsp");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("InserirPedidos.jsp");
                 dispatcher.forward(request, response);
               
             } else {
@@ -80,7 +77,7 @@ public class TesteServlet extends HttpServlet {
                     pedidos = pedidoDao.findAll();
                     System.out.println(pedidos.size());
                     request.setAttribute("pedidos", pedidos);
-                    RequestDispatcher dispatcher = request.getRequestDispatcher("teste.jsp");
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("VisualizarPedidos.jsp");
                     dispatcher.forward(request, response);
                 } else if (idPedido != null) {
                     System.out.println(pedidos.size());
@@ -152,7 +149,6 @@ public class TesteServlet extends HttpServlet {
                     response.sendRedirect("index.html");
                 }
             }
-
         }
     }
 }
