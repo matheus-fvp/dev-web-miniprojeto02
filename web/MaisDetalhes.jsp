@@ -18,11 +18,23 @@
         <link rel="stylesheet" href="MaisDetalhes.css">
     </head>
     <body>
-        <%String idPedido = (String)(request.getAttribute("idPedido")); %>
-        <%List<Pedido> pedidos = (List<Pedido>) request.getAttribute("pedidos");%>
-        <%int idpedidoI = Integer.parseInt(idPedido); %>
-        <%Pedido p = pedidos.get(idpedidoI);%>
-        <%List<Long> pedidosMostrados = new ArrayList<>();%>
+        <%
+            String idPedido = (String)(request.getAttribute("idPedido"));
+            int idpedidoI = Integer.parseInt(idPedido);
+            
+            /**
+                * As páginas VisualizarPedidos.jsp e MaisDetalhes.jsp, compartilham os mesmos dados
+                * sem a necessidade de uma segunda consulta
+                * ao BD na transição de uma página para outra, a lista de pedidos é obtida abaixo do servlet.
+            **/
+            List<Pedido> pedidos = (List<Pedido>) request.getAttribute("pedidos");
+            
+            //Pedido atual que foi clicado na página de Visualizar Pedidos
+            Pedido p = pedidos.get(idpedidoI); 
+            
+            //Lista para fazer o tratamento da consulta vinda do BD, para os adicionais serem colocados no devido lugar da renderização
+            List<Long> lanchesMostrados = new ArrayList<>();
+        %>
 
 
 
@@ -43,9 +55,10 @@
 
         <% for(ItemPedido i : p.getLanches()){%>        
         <%
-            if(pedidosMostrados.size()==0){
+            //Leitura do primeiro lanche pedido
+            if(lanchesMostrados.size()==0){
             System.out.println("Iniciando "+i.getProduto().getId());
-            pedidosMostrados.add(i.getProduto().getId());
+            lanchesMostrados.add(i.getProduto().getId());
         %>
         <div class="box">
             <ul>
@@ -58,12 +71,15 @@
 
                     <li><%=adicional.getNome()%></li>
 
-                    <%}%>
-                    <%
+                    <%}
                     }
-else if(!pedidosMostrados.contains(i.getProduto().getId())){
-System.out.println("prox pedido");
-                        pedidosMostrados.add(i.getProduto().getId()); 
+                    /**
+                     * Se o id do produto lido não estiver na lista neste ponto, significa que os dados
+                     * do lanche atual acabaram e o próximo será lido
+                    **/
+                        else if(!lanchesMostrados.contains(i.getProduto().getId())){
+                        System.out.println("prox pedido");
+                        lanchesMostrados.add(i.getProduto().getId()); 
                     %>
                 </ul> 
             </ul>
@@ -82,14 +98,18 @@ System.out.println("prox pedido");
                     <%}
                 }
             else{
-            for(Produto adicional : i.getAdicionais()){
-System.out.println("adicional vindo");
+                    /**
+                     * Se o ID do objeto que veio do BD está na lista, estamos no mesmo lanche ainda,
+                     * porém, outro adicional, será renderizado na mesma div
+                    **/
+                    for(Produto adicional : i.getAdicionais()){
+                        System.out.println("adicional vindo");
                     %>
                     <li><%=adicional.getNome()%></li>
                         <%
 
                         }
                         }
-                            System.out.println(pedidosMostrados);}%>
+                            System.out.println(lanchesMostrados);}%>
                     </body>
                     </html>

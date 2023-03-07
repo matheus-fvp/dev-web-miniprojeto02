@@ -31,6 +31,7 @@
                         <div id="lanches">
                             <% for(Lanche l: lanches){%>
                             <div class="radio-pedido">
+                                <%--Apenas o ID do lanche é necessário para o servlet adicionar as demais informações no BD --%>
                                 <input type="radio" name="lanche" id="lanche-<%=l.getId()%>" value="<%=l.getId()%>">
                                 <label for="lanche-<%=l.getId()%>"><%=l.getNome()%></label>
                             </div>
@@ -39,7 +40,7 @@
                             </div>
                             <%}%>
                         </div>
-                        
+
                     </div>
 
                     <div class="input-group">
@@ -49,6 +50,7 @@
                             <% for(Adicional a: adicionais){%>
 
                             <div>
+                                <%--Apenas o ID do adicional é necessário para o servlet adicionar as demais informações no BD --%>
                                 <input type="checkbox" name="adicionais" id="adicional-<%=a.getId()%>" value="<%=a.getId()%>">
                                 <label for="adicional-<%=a.getId()%>"><%=a.getNome()%></label>
                             </div>
@@ -75,6 +77,7 @@
                 </div>
                 <button type="submit" id="enviar-pedido" name="enviar-pedido" value="Submeter">Enviar Pedido</button>
 
+                <%--Elemento hidden onde o servlet irá pegar as informações do pedido submetido --%>
                 <input type="hidden" id="pedido-enviado" name="pedido-enviado">
             </div>
         </form>
@@ -86,12 +89,16 @@
             let pedido = [];
             let teste = ['teste'];
 
-
+            //your comment
             adicionarLancheBtn.addEventListener('click', function (event) {
                 event.preventDefault(); // previne o comportamento padrão do botão
+
+                //Pegando o lanche marcado
                 const lanche = document.querySelector('input[name="lanche"]:checked');
 
                 if (lanche !== null) {
+
+                    //Limpando a seleção de lanches
                     lanche.checked = false;
                     const lancheId = lanche.value;
                     var lancheTitulo = document.querySelector('label[for=\'lanche-' + lancheId + '\']').innerHTML;
@@ -104,6 +111,10 @@
                         adicionaisTitulo.push(document.querySelector('label[for=\'adicional-' + checkbox.value + '\']').innerHTML);
                         checkbox.checked = false;
                     });
+                    /**
+                     Os atributos lancheTitulo e adicionaisTitulo estão sendo usados apenas para ter uma
+                     melhor visualização do pedido na própria página, o servlet não estará usando estes atributos
+                     **/
 
                     pedido.push({
                         lancheId: lancheId,
@@ -112,15 +123,19 @@
                         adicionaisTitulo: adicionaisTitulo
                     });
 
-                    renderLanches(pedido); //descomentar
+                    //Faz a rendereização do pedido na página de inserção, para o cliente saber o que pediu
+                    renderLanches(pedido);
                     alert("Lanche adicionado!");
                 } else {
+                    //Um pedido deve conter ao menos 1 lanche adicionado, não pode ter apenas adicionais
                     alert("Você não escolheu um lanche para ser adicionado, tente novamente");
                 }
 
 
             });
 
+
+            //A ação de remoção do lanche remove o último lanche adicionado pelo cliente antes da confirmação do pedido
             removerLancheBtn.addEventListener('click', function (event) {
                 event.preventDefault(); // previne o comportamento padrão do botão
                 if (pedido.length === 0)
@@ -133,27 +148,29 @@
             });
 
             form.addEventListener('submit', function () {
-                if (pedido.length === 0){
+                if (pedido.length === 0) {
+                    //Um cliente deve fazer um pedido com ao menos 1 lanche adicionado
                     alert('Você não tem um lanche adicionado ainda, para fazer essa ação, por favor, adicione um lanche em sua compra primeiro.');
                     event.preventDefault();
-                }  
+                }
+                //Faz o tratamento dos dados a serem enviados para o servlet e empacota eles em um objeto JSON
                 else {
-                    //Dados pessoais
+                    //Dados pessoais do cliente
                     let nome = document.querySelector("#nome").value;
                     let email = document.querySelector("#email").value;
                     let telefone = document.querySelector("#telefone").value;
-                    
-                    //Endereço
+
+                    //Endereço 
                     let rua = document.querySelector("#rua").value;
                     let numero = document.querySelector("#numero").value;
                     let bairro = document.querySelector("#bairro").value;
-                    let complemento = document.querySelector("#complemento").value;
-                    
-                    if (nome==='' || email==='' || telefone==='' || rua === '' || numero === '' || bairro === '' ){
+                    let complemento = document.querySelector("#complemento").value; //Opcional de ser preenchido
+
+                    //Se algum dos campos necessários estiver vazio, o pedido não pode ser feito
+                    if (nome === '' || email === '' || telefone === '' || rua === '' || numero === '' || bairro === '') {
                         alert("Preencha os campos necessários dos seus dados pessoais");
                         event.preventDefault();
-                    }   
-                    else {
+                    } else {
                         pedido.push({
                             nome: nome,
                             email: email,
@@ -163,7 +180,10 @@
                             bairro: bairro,
                             complemento: complemento
                         });
+
+                        //Conversão do pedido em um objeto JSON
                         let jsonPedido = JSON.stringify(pedido);
+                        //O objeto é adicionado num elemento Hidden da página para ser enviado ao servlet
                         document.querySelector("#pedido-enviado").value = jsonPedido;
                         alert("Pedido enviado");
                     }
@@ -171,20 +191,25 @@
                 }
             });
 
+            //Função para renderizar os pedidos adicionados na tela do cliente antes da compra
             function renderLanches(pedidoLanches) {
                 const lanchesDiv = document.querySelector('#main');
 
                 let pedidoAtual = document.querySelector('.pedidoAtual');
+                //Este If verifica se há algum pedido já renderizado, caso não haja, é criado uma div para acomodar os produtos
                 if (pedidoAtual === null) {
                     pedidoAtual = document.createElement('div');
                     pedidoAtual.classList.add("pedidoAtual");
-                } else
+                }
+                //Caso exista um produto já renderizado, a div deve ser limpada antes, para não duplicar os dados
+                else
                     pedidoAtual.innerHTML = '';
 
+                //Cada lanche adicionado no pedido será renderizado abaixo
                 pedidoLanches.forEach(function (lanche, index) {
 
                     const h3 = document.createElement('h3');
-                    const textH3 = document.createTextNode("Lanche numero: " + (index + 1));
+                    const textH3 = document.createTextNode("Lanche número: " + (index + 1));
                     h3.appendChild(textH3);
 
                     const p = document.createElement('p');
