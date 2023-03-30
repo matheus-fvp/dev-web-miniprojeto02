@@ -1,12 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <welcome-file-list>
+        <welcome-file>login.html</welcome-file>
+    </welcome-file-list>
+    <filter>
+        <filter-name>RequisicaoFilter</filter-name>
+        <filter-class>Filters.RequisicaoFilter</filter-class>
+    </filter>
+    <filter>
+        <filter-name>AutenticacaoFilter</filter-name>
+        <filter-class>Filters.AutenticacaoFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AutenticacaoFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <servlet-name>Teste</servlet-name>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>RequisicaoFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
     <servlet>
         <servlet-name>ControllerPedidos</servlet-name>
         <servlet-class>controller.ControllerPedidos</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Login</servlet-name>
+        <servlet-class>controller.LoginServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Teste</servlet-name>
+        <servlet-class>controller.Teste</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ControllerPedidos</servlet-name>
         <url-pattern>/ControllerPedidos</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Login</servlet-name>
+        <url-pattern>/Login</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Teste</servlet-name>
+        <url-pattern>/Teste</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

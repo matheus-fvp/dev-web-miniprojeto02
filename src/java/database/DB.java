@@ -1,14 +1,9 @@
 package database;
 
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -68,16 +63,5 @@ public class DB {
             }
         }
     }
-    
-    /*public static Properties loadProperties() {
-        Properties props = null;
-        try(FileInputStream fs = new FileInputStream("../db.properties")) {
-            props = new Properties();
-            props.load(fs);
-        }catch(IOException e) {
-            System.err.println(e.getMessage());
-        }
-        return props;
-    }*/
     
 }
