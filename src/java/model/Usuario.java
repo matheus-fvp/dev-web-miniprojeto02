@@ -14,7 +14,11 @@ public class Usuario {
     private int id;
     private String userName;
     private String email;
+    private String password;
     private String sessionId;
+
+    public Usuario() {
+    }
 
     public int getId() {
         return id;
@@ -47,5 +51,20 @@ public class Usuario {
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "Usuario{" + "id=" + id + ", userName=" + userName + ", email=" + email + ", password=" + password + ", sessionId=" + sessionId + '}';
+    }
+    
+    
     
 }

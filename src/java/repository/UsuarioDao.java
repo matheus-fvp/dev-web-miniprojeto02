@@ -37,6 +37,7 @@ public class UsuarioDao {
                 usuario.setUserName(rs.getString("username"));
                 usuario.setEmail(rs.getString("email"));
                 usuario.setSessionId(rs.getString("session_id"));
+                usuario.setPassword(rs.getString("password"));
             }
             
         }catch(SQLException e) {
@@ -55,8 +56,26 @@ public class UsuarioDao {
         try {
             PreparedStatement ps = conn.prepareStatement(sql_save);
             ps.setString(1, usuario.getUserName());
-            ps.setString(1, usuario.getEmail());
-            ps.setString(1, usuario.getSessionId());
+            ps.setString(2, usuario.getEmail());
+            ps.setString(3, usuario.getSessionId());
+        }catch(SQLException e) {
+            DB.printSQLException(e);
+        }
+    }
+    
+    public void update(Usuario usuario) {
+        String sql_update = "UPDATE user " +
+                "SET username = ?, email = ?, password = ?, session_id = ? " +
+                "WHERE id = ?";
+        try {
+            System.out.println(usuario);
+           PreparedStatement ps = conn.prepareStatement(sql_update);
+           ps.setString(1, usuario.getUserName());
+           ps.setString(2, usuario.getEmail());
+           ps.setString(3, usuario.getPassword());
+           ps.setString(4, usuario.getSessionId());
+           ps.setInt(5, usuario.getId());
+           int executeUpdate = ps.executeUpdate();
         }catch(SQLException e) {
             DB.printSQLException(e);
         }

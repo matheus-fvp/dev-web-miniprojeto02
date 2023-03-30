@@ -55,7 +55,6 @@ public class RequisicaoFilter implements Filter {
             throws IOException, ServletException {
         
         HttpServletRequest req = (HttpServletRequest) request;
-        System.out.println(conn);
         req.setAttribute("conn", conn);
         
         String userName = null;
@@ -71,8 +70,12 @@ public class RequisicaoFilter implements Filter {
            Usuario usuario = usuarioDao.findByUserName(userName);
            req.setAttribute("usuario", usuario);
            if(usuario != null && usuario.getSessionId() != null) {
+               System.out.println("EEEEEIIII");
+               HttpSession session = req.getSession();
                req.getRequestDispatcher("index.html").forward(request, response);
+               
            }else {
+               System.out.println("AQUI Primeiro");
                chain.doFilter(request, response);
            }
            

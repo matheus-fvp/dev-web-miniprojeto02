@@ -41,15 +41,14 @@ public class AutenticacaoFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
         
         String uri = req.getRequestURI();
-        System.out.println(uri + " Eu");
         this.context.log("Requested Resource::" + uri);
         HttpSession session = req.getSession(false);
         
-        if(session == null && !(uri.endsWith("html") || uri.endsWith("Teste"))) {
-            System.out.println("AAAAAAAA");
+        if(session == null && !(uri.endsWith("html") || uri.endsWith("LoginServlet"))) {
             this.context.log("Unauthorized access request");
             res.sendRedirect("login.html");
         }else {
+            System.out.println("WWWWWWWWW");
             chain.doFilter(request, response);
         }
         
