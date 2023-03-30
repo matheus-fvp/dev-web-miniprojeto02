@@ -30,7 +30,9 @@ import repository.UsuarioDao;
 public class RequisicaoFilter implements Filter {
     
     private ServletContext context;
-    private UsuarioDao usuarioDao;
+    private UsuarioDao usuarioDao; //DAO para acessar os dados de um usuário no BD
+    
+    //Dados para acessar o banco de dados de usuários
     private static Connection conn = null; 
     private static String driver = "com.mysql.jdbc.Driver";
     private static String url = "jdbc:mysql://localhost/bd_user";
@@ -59,7 +61,7 @@ public class RequisicaoFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) response; 
         req.setAttribute("conn", conn);
         
-        String userName = null;
+        String userName = null;  //variavel que será utilizada para armazenar o userName que está armazenado em um cookie, caso ele exista.
         Cookie[] cookies = req.getCookies();
         if(cookies != null) {
             for(Cookie c : cookies) {
@@ -67,22 +69,20 @@ public class RequisicaoFilter implements Filter {
             }
         }
         
-        if(userName != null) {
-           usuarioDao = new UsuarioDao(conn);
-           Usuario usuario = usuarioDao.findByUserName(userName);
-           req.setAttribute("usuario", usuario);
-           if(usuario != null && usuario.getSessionId() != null) {
+        if(userName != null) { //verifica se o usuário possui um cookie que armazena seu userName
+           usuarioDao = new UsuarioDao(conn); 
+           Usuario usuario = usuarioDao.findByUserName(userName); //busca o usuário no BD
+           req.setAttribute("usuario", usuario); 
+           if(usuario != null && usuario.getSessionId() != null) { //verifica se o usuário existe e se ele possui uma sessão valida armazenada no BD
                HttpSession session = req.getSession();
                //res.sendRedirect("index.html");
-               req.getRequestDispatcher("PedidosController").forward(request, response);
+               req.getRequestDispatcher("PedidosController").forward(request, response); //redireciona o para um servlet que ira redirecionalo para a página de visualização
                
            }else {
-               System.out.println("AQUI Primeiro");
                chain.doFilter(request, response);
            }
            
         }else {
-            System.out.println("USER NAME NULO");
             chain.doFilter(request, response);
         }
         

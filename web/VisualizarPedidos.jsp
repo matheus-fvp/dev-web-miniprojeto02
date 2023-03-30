@@ -13,7 +13,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Lista Pedidos</title>
         <link rel="stylesheet" href="VisualizarPedidos.css">
-        <script src="ajaxReload.js"></script>
+        <!--<script src="ajaxReload.js"></script>-->
     </head>
     <body>
         <form action="ControllerPedidos" method="POST">

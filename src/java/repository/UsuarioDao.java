@@ -68,7 +68,6 @@ public class UsuarioDao {
                 "SET username = ?, email = ?, password = ?, session_id = ? " +
                 "WHERE id = ?";
         try {
-            System.out.println(usuario);
            PreparedStatement ps = conn.prepareStatement(sql_update);
            ps.setString(1, usuario.getUserName());
            ps.setString(2, usuario.getEmail());
