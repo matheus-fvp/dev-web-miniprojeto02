@@ -15,6 +15,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -55,6 +56,7 @@ public class RequisicaoFilter implements Filter {
             throws IOException, ServletException {
         
         HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse res = (HttpServletResponse) response; 
         req.setAttribute("conn", conn);
         
         String userName = null;
@@ -70,9 +72,9 @@ public class RequisicaoFilter implements Filter {
            Usuario usuario = usuarioDao.findByUserName(userName);
            req.setAttribute("usuario", usuario);
            if(usuario != null && usuario.getSessionId() != null) {
-               System.out.println("EEEEEIIII");
                HttpSession session = req.getSession();
-               req.getRequestDispatcher("index.html").forward(request, response);
+               //res.sendRedirect("index.html");
+               req.getRequestDispatcher("PedidosController").forward(request, response);
                
            }else {
                System.out.println("AQUI Primeiro");
@@ -80,6 +82,7 @@ public class RequisicaoFilter implements Filter {
            }
            
         }else {
+            System.out.println("USER NAME NULO");
             chain.doFilter(request, response);
         }
         

@@ -12,54 +12,38 @@
         <filter-class>Filters.AutenticacaoFilter</filter-class>
     </filter>
     <filter-mapping>
-        <filter-name>AutenticacaoFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-        <servlet-name>Teste2</servlet-name>
-    </filter-mapping>
-    <filter-mapping>
         <filter-name>RequisicaoFilter</filter-name>
         <url-pattern>/*</url-pattern>
         <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>AutenticacaoFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <servlet-name>LoginServlet</servlet-name>
     </filter-mapping>
     <servlet>
         <servlet-name>ControllerPedidos</servlet-name>
         <servlet-class>controller.ControllerPedidos</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>Login</servlet-name>
+        <servlet-name>LoginServlet</servlet-name>
         <servlet-class>controller.LoginServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>Teste</servlet-name>
-        <servlet-class>controller.Teste</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>Teste2</servlet-name>
-        <servlet-class>controller.LoginServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>Teste3</servlet-name>
-        <servlet-class>controller.Teste3</servlet-class>
+        <servlet-name>PedidosController</servlet-name>
+        <servlet-class>controller.PedidosController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ControllerPedidos</servlet-name>
         <url-pattern>/ControllerPedidos</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>Login</servlet-name>
-        <url-pattern>/Login</url-pattern>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/LoginServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>Teste</servlet-name>
-        <url-pattern>/Teste</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Teste2</servlet-name>
-        <url-pattern>/Teste2</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Teste3</servlet-name>
-        <url-pattern>/Teste3</url-pattern>
+        <servlet-name>PedidosController</servlet-name>
+        <url-pattern>/PedidosController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

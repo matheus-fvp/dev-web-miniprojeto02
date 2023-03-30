@@ -47,8 +47,7 @@ public class AutenticacaoFilter implements Filter {
         if(session == null && !(uri.endsWith("html") || uri.endsWith("LoginServlet"))) {
             this.context.log("Unauthorized access request");
             res.sendRedirect("login.html");
-        }else {
-            System.out.println("WWWWWWWWW");
+        }else {  
             chain.doFilter(request, response);
         }
         
