@@ -4,7 +4,6 @@
  */
 package Filters;
 
-import database.DB;
 import java.io.IOException;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -28,18 +27,18 @@ import repository.UsuarioDao;
  * @author vieir
  */
 public class RequisicaoFilter implements Filter {
-    
+
     private ServletContext context;
     private UsuarioDao usuarioDao; //DAO para acessar os dados de um usuário no BD
-    
+
     //Dados para acessar o banco de dados de usuários
-    private static Connection conn = null; 
+    private static Connection conn = null;
     private static String driver = "com.mysql.jdbc.Driver";
     private static String url = "jdbc:mysql://localhost/bd_user";
     private static String user = "root";
-    private static String password = "123456"; 
-    
-    public void init(FilterConfig fConfig) throws ServletException{ 
+    private static String password = "123456";
+
+    public void init(FilterConfig fConfig) throws ServletException {
         this.context = fConfig.getServletContext();
         this.context.log("AuthenticationFilter initialized");
         try {
@@ -50,46 +49,52 @@ public class RequisicaoFilter implements Filter {
         } catch (ClassNotFoundException ex) {
             System.err.println(ex.getMessage());
         }
-        
     }
-    
+
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain)
             throws IOException, ServletException {
-        
+
         HttpServletRequest req = (HttpServletRequest) request;
-        HttpServletResponse res = (HttpServletResponse) response; 
+        HttpServletResponse res = (HttpServletResponse) response;
         req.setAttribute("conn", conn);
-        
+        String path = req.getRequestURI();
+        if (path.endsWith(".css")||path.endsWith(".js")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         String userName = null;  //variavel que será utilizada para armazenar o userName que está armazenado em um cookie, caso ele exista.
         Cookie[] cookies = req.getCookies();
-        if(cookies != null) {
-            for(Cookie c : cookies) {
-                if(c.getName().equals("userName")) userName = c.getValue();
+        if (cookies != null) {
+            for (Cookie c : cookies) {
+                if (c.getName().equals("userName")) {
+                    userName = c.getValue();
+                }
             }
         }
-        
-        if(userName != null) { //verifica se o usuário possui um cookie que armazena seu userName
-           usuarioDao = new UsuarioDao(conn); 
-           Usuario usuario = usuarioDao.findByUserName(userName); //busca o usuário no BD
-           req.setAttribute("usuario", usuario); 
-           if(usuario != null && usuario.getSessionId() != null) { //verifica se o usuário existe e se ele possui uma sessão valida armazenada no BD
-               HttpSession session = req.getSession();
-               //res.sendRedirect("index.html");
-               req.getRequestDispatcher("PedidosController").forward(request, response); //redireciona o para um servlet que ira redirecionalo para a página de visualização
-               
-           }else {
-               chain.doFilter(request, response);
-           }
-           
-        }else {
+
+        if (userName != null) { //verifica se o usuário possui um cookie que armazena seu userName
+            usuarioDao = new UsuarioDao(conn);
+            Usuario usuario = usuarioDao.findByUserName(userName); //busca o usuário no BD
+            req.setAttribute("usuario", usuario);
+            if (usuario != null && usuario.getSessionId() != null) { //verifica se o usuário existe e se ele possui uma sessão valida armazenada no BD
+                HttpSession session = req.getSession();
+                //res.sendRedirect("index.html");
+                request.setAttribute("loginRedirect", "Visualizar Pedidos");
+                req.getRequestDispatcher("PedidosController").forward(request, response); //redireciona o para um servlet que ira redirecionalo para a página de visualização
+
+            } else {
+                chain.doFilter(request, response);
+            }
+
+        } else {
             chain.doFilter(request, response);
         }
-        
+
     }
 
-    public void destroy() {        
+    public void destroy() {
     }
 
-    
 }

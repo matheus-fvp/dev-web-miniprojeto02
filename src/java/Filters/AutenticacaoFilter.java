@@ -13,12 +13,8 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import jakarta.servlet.Filter;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.sql.Connection;
-import model.Usuario;
-import repository.UsuarioDao;
 
 
 /**
@@ -39,8 +35,12 @@ public class AutenticacaoFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
-        
         String uri = req.getRequestURI();
+        if (uri.endsWith(".css")||uri.endsWith(".js")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         this.context.log("Requested Resource::" + uri);
         HttpSession session = req.getSession(false);
         

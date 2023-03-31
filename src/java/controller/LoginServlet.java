@@ -57,6 +57,8 @@ public class LoginServlet extends HttpServlet {
             Cookie userName = new Cookie("userName", user);
             userName.setMaxAge(30*60);
             response.addCookie(userName);
+            System.out.println("Login Servlet indo para PedidosController");
+            request.setAttribute("loginRedirect", "Visualizar Pedidos");
             request.getRequestDispatcher("PedidosController").forward(request, response);
         }else{
             RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.html");

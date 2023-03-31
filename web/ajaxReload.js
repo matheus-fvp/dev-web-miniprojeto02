@@ -8,8 +8,9 @@
  pelo servlet, tratar esses dados e inserir eles no HTML, tendo uma atualização automática da visualização dos dados
  **/
 setInterval(function recarregarAjax() {
+    alert("Recarregando - Ajax");
     const xhttp = new XMLHttpRequest();
-    xhttp.open("POST", "/trabalhoweb/ControllerPedidos");
+    xhttp.open("POST", "/trabalhoweb/PedidosController");
 
     //Configurando Conexão em form para o servlet
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
